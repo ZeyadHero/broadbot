@@ -1,17 +1,21 @@
 // Discord.js bot
 const Discord = require('discord.js');
+var prefix = "$"
 const client = new Discord.Client();
 
 client.on('ready', () => {
-    client.user.setActivity('https://git.io/d.js-heroku', {type: 'WATCHING'});
+    client.user.setActivity('STaR Server | broadcast', {type: 'WATCHING'});
 });
 
-client.on('message', msg => {
-    if (!msg.content.startsWith(process.env.PREFIX) || !msg.guild) return;
-    const command = msg.content.split(' ')[0].substr(process.env.PREFIX.length);
-    const args = msg.content.split(' ').slice(1).join(' ');
-    if (command === 'guide') return msg.channel.send('https://git.io/d.js-heroku');
-    else if (command === 'invite') return msg.channel.send(process.env.INVITE);
-});
+client.on('message', async message => {
+  let args = message.content.slice(3);
+  if(message.content.startsWith(prefix + 'bc')) {
+    if(!message.guild.members.get(message.author.id).hasPermission('ADMINISTRATOR')) return message.channel.send('Required Administrator Permission')
+       message.guild.members.forEach(m => {
+      
+      m.send(args.replace('[user]', m).replace('[server]', m.guild.name).replace('[sender]', message.author.username))
+    })
+  }
+})
 
 client.login(process.env.TOKEN);
